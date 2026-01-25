@@ -2,7 +2,8 @@ import streamlit as st
 
 from ..api import fetch_api
 from ..components import render_metric_card
-from ..config import get_base_url
+from ..config import get_base_url, PLACEHOLDER_IMAGE
+from ..utils import local_image_for_name
 
 
 def render_home(container):
@@ -26,14 +27,20 @@ def render_home(container):
             if top_runs:
                 best = top_runs[0]
                 render_metric_card("Top Runs", best.get("batsman_runs"))
-                st.caption(best.get("batter", ""))
+                batter_name = best.get("batter", "")
+                st.caption(batter_name)
+                img = local_image_for_name(batter_name) or PLACEHOLDER_IMAGE
+                st.image(img, width=120)
         with cols[2]:
             with st.spinner("Fetching top wicket takers..."):
                 top_wickets = fetch_api("/bowlers/top?limit=1")
             if top_wickets:
                 best = top_wickets[0]
                 render_metric_card("Top Wickets", best.get("bowler_wickets"))
-                st.caption(best.get("bowler", ""))
+                bowler_name = best.get("bowler", "")
+                st.caption(bowler_name)
+                img = local_image_for_name(bowler_name, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+                st.image(img, width=120)
 
         st.markdown("#### How to use")
         st.write(
