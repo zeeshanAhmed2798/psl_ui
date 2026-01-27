@@ -27,15 +27,23 @@ def render_teams(container):
         st.markdown("#### Team Highlights")
         cols = st.columns(2)
         with cols[0]:
+            st.caption("Most runs scored (team totals)")
             with st.spinner("Highest totals..."):
                 totals = fetch_api("/teams/top-totals")
             if totals:
-                st.dataframe(pd.DataFrame(totals), use_container_width=True)
+                df_totals = pd.DataFrame(totals)
+                if {"batting_team", "total_runs"}.issubset(df_totals.columns):
+                    df_totals = df_totals.rename(columns={"batting_team": "Team", "total_runs": "Total Runs"})
+                st.dataframe(df_totals, use_container_width=True)
         with cols[1]:
+            st.caption("Most runs chased (successful chases)")
             with st.spinner("Best chases..."):
                 chases = fetch_api("/teams/top-chases")
             if chases:
-                st.dataframe(pd.DataFrame(chases), use_container_width=True)
+                df_chases = pd.DataFrame(chases)
+                if {"batting_team", "target"}.issubset(df_chases.columns):
+                    df_chases = df_chases.rename(columns={"batting_team": "Team", "target": "Target"})
+                st.dataframe(df_chases, use_container_width=True)
 
 
 def render_team_stats(team: str):

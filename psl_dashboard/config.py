@@ -4,7 +4,7 @@ from pathlib import Path
 
 import streamlit as st
 
-API_BASE_URL = os.getenv("PSL_API_BASE", "http://127.0.0.1:8000")
+API_BASE_URL = os.getenv("PSL_API_BASE", "https://psl-stats-api.vercel.app")
 PLACEHOLDER_IMAGE = "https://via.placeholder.com/150?text=PSL"
 TEAM_FALLBACK = [
     "Islamabad United",

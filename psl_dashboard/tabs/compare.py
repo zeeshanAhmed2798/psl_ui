@@ -70,6 +70,8 @@ def render_player_comparison(p1: str, p2: str):
         render_metric_card("Average", player_a.get("avg"))
         render_metric_card("Strike Rate", player_a.get("strikeRate"))
         render_metric_card("Hundreds", player_a.get("hundreds"))
+        render_metric_card("Fours", player_a.get("fours"))
+        render_metric_card("Sixes", player_a.get("sixes"))
     with cols[1]:
         img_b = local_image_for_name(p2) or PLACEHOLDER_IMAGE
         st.image(img_b, caption=p2, width=120)
@@ -77,6 +79,8 @@ def render_player_comparison(p1: str, p2: str):
         render_metric_card("Average", player_b.get("avg"))
         render_metric_card("Strike Rate", player_b.get("strikeRate"))
         render_metric_card("Hundreds", player_b.get("hundreds"))
+        render_metric_card("Fours", player_b.get("fours"))
+        render_metric_card("Sixes", player_b.get("sixes"))
 
     labels = ["Runs", "Average", "Strike Rate", "Hundreds", "Sixes", "Fours"]
     values_a = [
