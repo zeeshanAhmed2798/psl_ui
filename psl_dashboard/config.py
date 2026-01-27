@@ -1,4 +1,6 @@
 import os
+import re
+from pathlib import Path
 
 import streamlit as st
 
@@ -13,6 +15,9 @@ TEAM_FALLBACK = [
     "Quetta Gladiators",
 ]
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+IMAGES_DIR = BASE_DIR / "images"
+
 
 def get_base_url() -> str | None:
     """Return sanitized base URL if configured, else None."""
@@ -20,3 +25,14 @@ def get_base_url() -> str | None:
     if not override or "your-api-url" in override:
         return None
     return override.rstrip("/")
+
+
+def team_logo_path(team: str) -> str | None:
+    """Return a local logo path for a team if available."""
+    if not team:
+        return None
+    slug = re.sub(r"[^a-z0-9]+", "_", team.casefold()).strip("_")
+    candidate = IMAGES_DIR / f"{slug}.png"
+    if candidate.exists():
+        return str(candidate)
+    return None

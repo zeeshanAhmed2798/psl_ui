@@ -5,22 +5,15 @@ import streamlit as st
 from ..api import fetch_api, list_players, player_endpoint
 from ..components import render_endpoint_copy, render_metric_card, render_table
 from ..config import PLACEHOLDER_IMAGE
-from ..utils import fuzzy_search, normalize_name
+from ..utils import fuzzy_search, local_image_for_name
 
 
 def render_players(container):
     with container:
         st.subheader("🏏 Players Explorer")
         player_names = list_players()
-        query = st.text_input("Search player name")
-        selected = st.selectbox("Select from list", player_names) if player_names else ""
-        suggestions = fuzzy_search(query, player_names) if query else []
-        suggestion_choice = None
-        if suggestions:
-            st.info(f"Did you mean: {', '.join(suggestions)}?")
-            suggestion_choice = st.selectbox("Suggested names", suggestions, key="player_suggestion")
-
-        target_name = suggestion_choice or normalize_name(query) or selected
+        selected = st.selectbox("Select player", player_names) if player_names else ""
+        target_name = selected
 
         if target_name:
             render_player_stats(target_name, player_names)
@@ -41,7 +34,8 @@ def render_player_stats(name: str, available_names: list[str]):
         return
 
     overall = stats.get("overall") or stats.get("all") or stats
-    st.image(PLACEHOLDER_IMAGE, caption=name, width=120)
+    img_path = local_image_for_name(name) or PLACEHOLDER_IMAGE
+    st.image(img_path, caption=name, width=120)
     st.subheader(f"Overall Stats: {name}")
     metrics = [
         ("Runs", overall.get("runs")),

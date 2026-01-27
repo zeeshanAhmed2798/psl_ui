@@ -4,22 +4,15 @@ import streamlit as st
 from ..api import bowler_endpoint, fetch_api, list_bowlers
 from ..components import render_endpoint_copy, render_metric_card, render_table
 from ..config import PLACEHOLDER_IMAGE
-from ..utils import fuzzy_search, normalize_name
+from ..utils import fuzzy_search, local_image_for_name
 
 
 def render_bowlers(container):
     with container:
         st.subheader("🎯 Bowlers Explorer")
         bowler_names = list_bowlers()
-        query = st.text_input("Search bowler name")
-        selected = st.selectbox("Select from list", bowler_names) if bowler_names else ""
-        suggestions = fuzzy_search(query, bowler_names) if query else []
-        suggestion_choice = None
-        if suggestions:
-            st.info(f"Did you mean: {', '.join(suggestions)}?")
-            suggestion_choice = st.selectbox("Suggested names", suggestions, key="bowler_suggestion")
-
-        target_name = suggestion_choice or normalize_name(query) or selected
+        selected = st.selectbox("Select bowler", bowler_names) if bowler_names else ""
+        target_name = selected
 
         if target_name:
             render_bowler_stats(target_name, bowler_names)
@@ -40,7 +33,8 @@ def render_bowler_stats(name: str, available_names: list[str]):
         return
 
     overall = stats.get("overall") or stats.get("all") or stats
-    st.image(PLACEHOLDER_IMAGE, caption=name, width=120)
+    img_path = local_image_for_name(name, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+    st.image(img_path, caption=name, width=120)
     st.subheader(f"Overall Bowling Stats: {name}")
     metrics = [
         ("Innings", overall.get("innings")),

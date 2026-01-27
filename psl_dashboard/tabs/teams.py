@@ -4,6 +4,7 @@ import streamlit as st
 from ..api import encode_value, fetch_api, list_teams, team_endpoint
 from ..components import render_endpoint_copy, render_metric_card, render_table
 from ..config import PLACEHOLDER_IMAGE
+from ..utils import local_image_for_name
 
 
 def render_teams(container):
@@ -46,7 +47,8 @@ def render_team_stats(team: str):
         return
 
     overall = stats.get("overall", stats)
-    st.image(PLACEHOLDER_IMAGE, caption=team, width=120)
+    img = local_image_for_name(team, base_dir="images") or PLACEHOLDER_IMAGE
+    st.image(img, caption=team, width=120)
     st.subheader(f"Team Stats: {team}")
     metrics = [
         ("Matches", overall.get("match_played")),

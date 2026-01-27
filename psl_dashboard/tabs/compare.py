@@ -3,6 +3,7 @@ import streamlit as st
 from ..api import encode_value, fetch_api, list_bowlers, list_players, list_teams
 from ..components import render_comparison_chart, render_endpoint_copy, render_metric_card
 from ..config import PLACEHOLDER_IMAGE
+from ..utils import local_image_for_name
 from .bowlers import render_bowler_stats
 from .players import render_player_stats
 
@@ -63,13 +64,15 @@ def render_player_comparison(p1: str, p2: str):
 
     cols = st.columns(2)
     with cols[0]:
-        st.image(PLACEHOLDER_IMAGE, caption=p1, width=120)
+        img_a = local_image_for_name(p1) or PLACEHOLDER_IMAGE
+        st.image(img_a, caption=p1, width=120)
         render_metric_card("Runs", player_a.get("runs"))
         render_metric_card("Average", player_a.get("avg"))
         render_metric_card("Strike Rate", player_a.get("strikeRate"))
         render_metric_card("Hundreds", player_a.get("hundreds"))
     with cols[1]:
-        st.image(PLACEHOLDER_IMAGE, caption=p2, width=120)
+        img_b = local_image_for_name(p2) or PLACEHOLDER_IMAGE
+        st.image(img_b, caption=p2, width=120)
         render_metric_card("Runs", player_b.get("runs"))
         render_metric_card("Average", player_b.get("avg"))
         render_metric_card("Strike Rate", player_b.get("strikeRate"))
@@ -111,13 +114,15 @@ def render_bowler_comparison(b1: str, b2: str):
 
     cols = st.columns(2)
     with cols[0]:
-        st.image(PLACEHOLDER_IMAGE, caption=b1, width=120)
+        img_a = local_image_for_name(b1, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+        st.image(img_a, caption=b1, width=120)
         render_metric_card("Wickets", bowler_a.get("wicket"))
         render_metric_card("Economy", bowler_a.get("economy"))
         render_metric_card("Average", bowler_a.get("average"))
         render_metric_card("Strike Rate", bowler_a.get("strikeRate"))
     with cols[1]:
-        st.image(PLACEHOLDER_IMAGE, caption=b2, width=120)
+        img_b = local_image_for_name(b2, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+        st.image(img_b, caption=b2, width=120)
         render_metric_card("Wickets", bowler_b.get("wicket"))
         render_metric_card("Economy", bowler_b.get("economy"))
         render_metric_card("Average", bowler_b.get("average"))
@@ -158,7 +163,8 @@ def render_team_comparison(t1: str, t2: str):
     cols = st.columns(2)
     for col, team_name, team_data in zip(cols, [t1, t2], [team_a, team_b]):
         with col:
-            st.image(PLACEHOLDER_IMAGE, caption=team_name, width=120)
+            logo = local_image_for_name(team_name, base_dir="images") or PLACEHOLDER_IMAGE
+            st.image(logo, caption=team_name, width=140)
             render_metric_card("Matches", team_data.get("match_played"))
             render_metric_card("Wins", team_data.get("match_won"))
             render_metric_card("Losses", team_data.get("loss"))
@@ -203,6 +209,8 @@ def render_batsman_bowler_h2h(batsman: str, bowler: str):
 
     cols = st.columns(2)
     with cols[0]:
+        img_bat = local_image_for_name(batsman, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+        st.image(img_bat, caption=batsman, width=120)
         st.caption(f"{batsman} batting vs {bowler}")
         render_metric_card("Runs", _fmt(bat.get("runs")))
         render_metric_card("Balls", _fmt(bat.get("balls")))
@@ -212,6 +220,8 @@ def render_batsman_bowler_h2h(batsman: str, bowler: str):
         render_metric_card("Sixes", _fmt(bat.get("sixes")))
         render_metric_card("Dismissals", _fmt(bat.get("outs")))
     with cols[1]:
+        img_bowl = local_image_for_name(bowler, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+        st.image(img_bowl, caption=bowler, width=120)
         st.caption(f"{bowler} bowling vs {batsman}")
         render_metric_card("Runs Conceded", _fmt(bowl.get("runs_conceded")))
         render_metric_card("Balls", _fmt(bowl.get("balls")))
