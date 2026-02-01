@@ -1,3 +1,10 @@
+"""
+PSL Analytics Hub - Utilities and Helper Functions
+===================================================
+Helper functions for the dashboard.
+"""
+import re
+from pathlib import Path
 from difflib import get_close_matches
 
 
@@ -17,10 +24,14 @@ def local_image_for_name(name: str, base_dir: str = "downloads_psl_players") -> 
     """
     Return a filesystem path to a local image for the given name if it exists.
     Tries multiple slugs and extensions; also searches an optional secondary directory (images).
+    
+    Args:
+        name: Name to search for
+        base_dir: Base directory to search in (default: "downloads_psl_players")
+    
+    Returns:
+        Path to image file or None if not found
     """
-    from pathlib import Path
-    import re
-
     if not name:
         return None
 
@@ -36,6 +47,7 @@ def local_image_for_name(name: str, base_dir: str = "downloads_psl_players") -> 
         simple_slug = re.sub(r"[^a-z0-9]+", "_", lower).strip("_")
         title_slug = re.sub(r"[^A-Za-z0-9]+", "_", title).strip("_")
         raw_slug = stripped.replace(" ", "_")
+        
         for slug in {simple_slug, title_slug, raw_slug, lower.replace(" ", "_"), title.replace(" ", "_")}:
             for ext in ("jpg", "png", "jpeg", "webp"):
                 candidates.append(f"{slug}.{ext}")
@@ -47,4 +59,5 @@ def local_image_for_name(name: str, base_dir: str = "downloads_psl_players") -> 
             path = img_dir / cand
             if path.exists():
                 return path.as_posix()
+    
     return None
