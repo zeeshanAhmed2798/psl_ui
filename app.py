@@ -114,6 +114,5 @@ def main():
     tabs.render_leaderboards(tab_handles[5])
     tabs.render_api_docs(tab_handles[6])
 
-
 if __name__ == "__main__":
     main()
