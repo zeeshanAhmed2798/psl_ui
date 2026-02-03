@@ -66,10 +66,13 @@ def render_player_stats(name: str, available_names: list[str]):
         st.markdown("#### Season Growth")
         df_growth = pd.DataFrame(growth)
         x_field = "season" if "season" in df_growth.columns else "year" if "year" in df_growth.columns else None
-        y_field = "runs" if "runs" in df_growth.columns else None
+        y_field = "batsman_runs" if "batsman_runs" in df_growth.columns else "runs" if "runs" in df_growth.columns else None
         if x_field and y_field:
+            df_growth = df_growth.sort_values(x_field)
+            df_growth["career_runs"] = df_growth[y_field].cumsum()
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=df_growth[x_field], y=df_growth[y_field], mode="lines+markers", name="Runs"))
+            fig.add_trace(go.Scatter(x=df_growth[x_field], y=df_growth[y_field], mode="lines+markers", name="Season Runs"))
+            fig.add_trace(go.Scatter(x=df_growth[x_field], y=df_growth["career_runs"], mode="lines+markers", name="Career Runs"))
             fig.update_layout(height=320, xaxis_title="Season", yaxis_title="Runs")
             st.plotly_chart(fig, use_container_width=True)
         else:

@@ -15,7 +15,7 @@ def render_home(container):
             st.warning("Set a valid API base URL in the sidebar to start.")
             return
 
-        cols = st.columns(3)
+        cols = st.columns(4)
         with cols[0]:
             with st.spinner("Checking health..."):
                 health = fetch_api("/health", use_cache=False)
@@ -40,6 +40,16 @@ def render_home(container):
                 bowler_name = best.get("bowler", "")
                 st.caption(bowler_name)
                 img = local_image_for_name(bowler_name, base_dir="downloads_psl_players") or PLACEHOLDER_IMAGE
+                st.image(img, width=120)
+        with cols[3]:
+            with st.spinner("Fetching top six hitters..."):
+                top_sixes = fetch_api("/players/top-sixes?limit=1")
+            if top_sixes:
+                best = top_sixes[0]
+                render_metric_card("Top Sixes", best.get("sixes"))
+                batter_name = best.get("batter", "")
+                st.caption(batter_name)
+                img = local_image_for_name(batter_name) or PLACEHOLDER_IMAGE
                 st.image(img, width=120)
 
         st.markdown("#### How to use")
